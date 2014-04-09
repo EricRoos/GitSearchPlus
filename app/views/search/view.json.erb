@@ -1,0 +1,75 @@
+<% @total_pages = @num_items / 30 %>
+<div class="row">
+  <div class="small-3 columns">
+  <%= label_tag "Order By (Stars):" %>
+    <% order_options = [] %>
+    <% if @order != "" %>
+      <% order_options = [@order,""] %>
+    <% else %>
+      <% order_options = [""] %>
+    <% end %>
+    <% order_options = order_options + (['Ascending','Descending']-[@order,""]) %>
+    <%= select_tag :order_select, options_for_select(order_options)%>
+  </div>
+  <div class="small-3 pull-6 columns">
+  <%= label_tag "Filter By (language):" %>
+    <% language_options = [] %>
+    <% if @language != "" %>
+      <% language_options = language_options + [@language,""] %>
+    <% else %>
+      <% language_options = language_options + [""] %>
+    <% end %>
+    <%= select_tag :language_select, options_for_select(language_options + (@languages-[@language,""])) %>
+  </div>
+  </div>
+  <i>*Press 'Find' to filter results</i><br/>
+Pages: <span id="page_num"><%= @page %></span> of <span id="total_pages"> <%= [1,@total_pages].max %></span><br/>
+<%= @redis_ret %>
+<%= render partial: "paginate", :formats => [:html] %>
+<% count = 0 %>
+<div class="data_container">
+<% @items.each do |i| %>
+  <% if i %>
+    <% if count%2 == 0 %>
+      <div class="row" octo-item>
+    <% else %>
+      <div class="row" style="background-color:rgb(239, 240, 252)" octo-item>
+    <% end %>
+        <div class="small-6 columns">
+        <h5><%= "#{i["name"]}" %></h5>
+        </div>
+        <div class="small-6 columns" style="text-align:right;">
+          <h5><%= i["language"] %></h5>
+        </div>
+      </div>
+    <% count = count+1 %>
+  <% end %>
+<% end %>
+</div>
+
+<script>
+(function() {
+  $(function() {
+    $('select').on('change',(function(){
+      var language = $("#language_select").val();
+      var order = $("#order_select").val();
+      $("#order").val(order);
+      $("#language").val(language);
+    }));
+    $('a[data-remote]').on('ajax:beforeSend', (function(_this) {
+      return function() {
+        $("#loader").show();
+        return $("#overlay").show();
+      };
+    })(this));
+    $("a[data-remote]").on("ajax:success", function(evt, data, status, xhr) {
+      $("#display").html(data.html_content);
+      $("#loader").hide();
+      return $("#overlay").hide();
+    });
+    $("a[data-remote]").on("ajax:error", function(evt, data, status, xhr) {
+      return alert(xhr);
+    });
+  });
+}).call(this);
+</script>

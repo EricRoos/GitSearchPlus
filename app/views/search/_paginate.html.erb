@@ -1,0 +1,13 @@
+<div class="row">
+  <div class="small-6 columns">
+    <% if @page-1 > 0 %>
+      <h5><%= link_to "Previous", query_path(:format => :json, :page => @page-1,:q => @query), :remote => true, :id => "remote_link", "data-type" => :json %></h5>
+    <% end %>
+  </div>
+
+  <div class="small-6 columns" style="text-align:right">
+    <% if @page+1 <= @total_pages  %>
+      <h5><%= link_to "Next", query_path(:format => :json, :page => @page+1,:q => @query), :remote => true ,:id => "remote_link", "data-type" => :json %></h5>
+    <% end %>
+  </div>
+</div>

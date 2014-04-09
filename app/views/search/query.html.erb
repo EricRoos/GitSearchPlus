@@ -1,0 +1,27 @@
+<div class="rows">
+  <div class="small-8 small-centered columns">
+    <h1>GitSearch+</h1>
+    <%= form_tag(query_path(:format => :json), {method: :get, remote: :true, id: :query_form})  do %>
+        <div class="row collapse">
+        
+          <div class="small-3 large-2 columns">
+              <span class="prefix">Search Term</span>
+          </div>
+          <div class="small-7 large-8 columns">
+            <%= text_field_tag 'q' ,'', :placeholder => "Enter you search query" %>
+          </div>
+          <div class="small-2 columns">
+            <%= submit_tag "Find", :class => "button postfix" %>
+          </div>
+          <%= hidden_field_tag :language %>
+          <%= hidden_field_tag :order %>
+
+        </div>
+    <% end %>
+    <div id="display">
+
+    </div>
+  </div>
+</div>
+<div class="preloader" id="loader" style="display:none;position:absolute;z-index:101;">
+</div>
